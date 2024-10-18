@@ -4,14 +4,20 @@ import { useToastStore } from "../stores/toast-store";
 let toastStore: any = null;
 
 const instance = axios.create({
-  baseURL: "http://192.168.12.245:19003",
+  baseURL: "http://192.168.12.19:18680",
   timeout: 5000,
 });
 
 export interface CommonResponse<T> {
   code: number;
-  msg?: string;
+  message?: string;
   data?: T;
+}
+
+export interface Page<T> {
+  count: number;
+  
+  list: T[];
 }
 
 // Alter defaults after instance has been created

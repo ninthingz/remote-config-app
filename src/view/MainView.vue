@@ -10,7 +10,6 @@ const router = useRouter();
 const toastStore = useToastStore();
 
 if (localStorage.getItem("token") !== null) {
-  console.log(localStorage.getItem("token"));
   instance.defaults.headers.common["Authorization"] =
     localStorage.getItem("token");
 }
