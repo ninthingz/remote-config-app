@@ -62,6 +62,7 @@ getConfigHistoryList();
         <tr>
           <th>旧值</th>
           <th>新值</th>
+          <th>备注</th>
           <th>是否启用</th>
           <th>修改时间</th>
           <th>修改人</th>
@@ -76,7 +77,11 @@ getConfigHistoryList();
         >
           <td>{{ configHistory.old_value }}</td>
           <td>{{ configHistory.new_value }}</td>
-          <td>{{ configHistory.enable ? "启用" : "禁用" }}</td>
+          <td>{{ configHistory.message }}</td>
+          <td>
+            <div v-if="configHistory.enable" class="badge badge-accent">启用</div>
+            <div v-else class="badge badge-neutral">禁用</div>
+          </td>
           <td>{{ moment(configHistory.create_time * 1000).format("YYYY-MM-DD HH:mm:ss") }}</td>
           <td>{{ configHistory.nickname }}</td>
         </tr>

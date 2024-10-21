@@ -18,6 +18,7 @@ export interface ConfigHistory {
   new_value: string;
   nickname: string;
   enable: boolean;
+  message: string;
   create_time: number;
 }
 

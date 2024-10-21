@@ -80,12 +80,32 @@ const editConfigClick = (config: Config) => {
   showConfigEditDialog.value = true;
 };
 
+const batchEdit = () => {
+  if (selectConfigMap.value.size === 0) {
+    toastStore.showToast("请选择要批量修改的配置", "info");
+    return;
+  }
+  dialogType.value = "modify";
+  multiSelected.value = true;
+  showConfigEditDialog.value = true;
+};
+
 const deleteConfigClick = (config: Config) => {
   selectedConfig.value = config;
+
+  const lastGetTime = moment(selectedConfig.value.last_get_time * 1000);
+  const newTime = moment();
+
+  if (newTime.diff(lastGetTime, "days") < 7) {
+    toastStore.showToast("删除失败，最近一次调用时间小于7天", "info");
+    return;
+  }
+
   showConfigDeleteDiglog.value = true;
 };
 
 const configHistoryClick = (config: Config) => {
+  selectedConfigByHistory.value = undefined;
   selectedConfigByHistory.value = config;
   showConfigHistoryDiglog.value = true;
 };
@@ -96,7 +116,7 @@ const editConfigComfirm = async () => {
       if (multiSelected.value) {
         let successCount = 0;
         let errorCount = 0;
-        selectConfigMap.value.forEach(async (config) => {
+        for (const [_, config] of selectConfigMap.value) {
           const res = await updateConfig({
             id: config.id,
             name: config.name,
@@ -111,10 +131,11 @@ const editConfigComfirm = async () => {
           } else {
             errorCount += 1;
           }
-        });
+        }
         if (errorCount === 0) {
           showConfigEditDialog.value = false;
-          toastStore.showToast("批量修改成功", "success");
+          toastStore.showToast(`批量修改${successCount}条记录成功`, "success");
+          getConfigList();
         }
       } else {
         const res = await updateConfig({
@@ -129,6 +150,7 @@ const editConfigComfirm = async () => {
         if (res.data.code === 200) {
           showConfigEditDialog.value = false;
           toastStore.showToast("修改成功", "success");
+          getConfigList();
         }
       }
     } else {
@@ -144,6 +166,7 @@ const editConfigComfirm = async () => {
       if (res.data.code === 200) {
         showConfigEditDialog.value = false;
         toastStore.showToast("新增成功", "success");
+        getConfigList();
       }
     }
   }
@@ -155,6 +178,7 @@ const deleteComfirm = async () => {
     if (res.data.data?.code === 200) {
       showConfigDeleteDiglog.value = false;
       toastStore.showToast("删除成功", "success");
+      getConfigList();
     }
   }
 };
@@ -167,9 +191,26 @@ const changeSelectedConfig = (event: Event) => {
     const selected = target.checked;
     if (selected) {
       selectConfigMap.value.set(id, config);
+      selectedConfig.value = config;
     } else {
       selectConfigMap.value.delete(id);
     }
+  }
+};
+
+const selectAllChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const selected = target.checked;
+  if (selected) {
+    configList.value.forEach((config) => {
+      selectConfigMap.value.set(config.id, config);
+    });
+
+    if (configList.value.length > 0) {
+      selectedConfig.value = configList.value[0];
+    }
+  } else {
+    selectConfigMap.value.clear();
   }
 };
 
@@ -191,7 +232,7 @@ getConfigList();
 </script>
 
 <template>
-  <div class="p-12">
+  <div class="pl-12 pr-12">
     <dialog class="modal" :class="{ 'modal-open': showConfigDeleteDiglog }">
       <div class="modal-box">
         <h3 class="text-lg font-bold">提示</h3>
@@ -216,7 +257,7 @@ getConfigList();
       class="modal"
       :class="{ 'modal-open': showConfigHistoryDiglog }"
     >
-      <div class="modal-box w-11/12 max-w-5xl">
+      <div class="modal-box w-11/12 max-w-full">
         <ConfigHistoryView
           :config="selectedConfigByHistory"
         ></ConfigHistoryView>
@@ -265,6 +306,14 @@ getConfigList();
           class="input input-bordered"
         />
         <div class="label">
+          <span class="label-text">备注</span>
+        </div>
+        <input
+          v-model="selectedConfig.message"
+          type="text"
+          class="input input-bordered"
+        />
+        <div class="label">
           <span class="label-text">是否启用</span>
         </div>
         <input
@@ -296,10 +345,12 @@ getConfigList();
             class="input input-bordered m-2"
             placeholder="请输入关键字"
           />
-          <button @click="getConfigList" class="btn btn-primary m-2">搜索</button>
+          <button @click="getConfigList" class="btn btn-primary m-2">
+            搜索
+          </button>
         </div>
         <div>
-          <button class="btn btn-info m-2">批量修改</button>
+          <button @click="batchEdit" class="btn btn-info m-2">批量修改</button>
           <button @click="createConfigClick" class="btn btn-primary">
             新增
           </button>
@@ -311,12 +362,18 @@ getConfigList();
           <tr>
             <th>
               <label>
-                <input type="checkbox" class="checkbox" />
+                <input
+                  @change="selectAllChange"
+                  type="checkbox"
+                  class="checkbox"
+                />
               </label>
             </th>
             <th>键</th>
             <th>值</th>
             <th>上一次调用时间</th>
+            <th>备注</th>
+            <th>状态</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -328,6 +385,7 @@ getConfigList();
                 <input
                   @change="changeSelectedConfig"
                   :value="config.id"
+                  :checked="selectConfigMap.has(config.id)"
                   type="checkbox"
                   class="checkbox"
                 />
@@ -336,6 +394,13 @@ getConfigList();
             <td>{{ config.name }}</td>
             <td>{{ config.value }}</td>
             <td>{{ formatTime(config.last_get_time) }}</td>
+            <td>{{ config.message }}</td>
+            <td>
+              <div v-if="config.enable" class="badge badge-accent w-12">
+                启用
+              </div>
+              <div v-else class="badge badge-neutral w-12">禁用</div>
+            </td>
             <td>
               <button
                 @click="editConfigClick(config)"

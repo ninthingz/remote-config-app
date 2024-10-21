@@ -1,29 +1,19 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+
+const logout = ()=>{
+  localStorage.removeItem("token");
+  window.location.href = "/login";
+}
+</script>
 
 <template>
   <div class="navbar bg-base-100">
-    <div class="flex-none">
-      <button class="btn btn-square btn-ghost">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-5 w-5 stroke-current"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          ></path>
-        </svg>
-      </button>
-    </div>
     <div class="flex-1">
-      <a class="btn btn-ghost text-xl">daisyUI</a>
+      <span class="btn btn-ghost text-xl">SWtest云配置</span>
     </div>
     <div class="flex-none">
-      <button class="btn btn-square btn-ghost">
+      <div class="dropdown dropdown-end">
+        <button class="btn btn-square btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -38,6 +28,13 @@
           ></path>
         </svg>
       </button>
+        <ul
+          tabindex="0"
+          class="menu dropdown-content z-[1] w-52 rounded-box bg-base-100 p-2 shadow"
+        >
+          <li><a @click="logout">登出</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>

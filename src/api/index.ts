@@ -16,7 +16,6 @@ export interface CommonResponse<T> {
 
 export interface Page<T> {
   count: number;
-  
   list: T[];
 }
 
