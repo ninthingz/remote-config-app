@@ -4,7 +4,10 @@ import { useToastStore } from "../stores/toast-store";
 let toastStore: any = null;
 
 const instance = axios.create({
-  baseURL: "http://192.168.12.19:18680",
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "http://127.0.0.1:18680"
+      : "http://192.168.8.8:18680",
   timeout: 5000,
 });
 

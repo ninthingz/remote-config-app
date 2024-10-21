@@ -240,7 +240,9 @@ getConfigList();
         <div class="modal-action">
           <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
-            <button @click="deleteComfirm" class="btn btn-primary">确认</button>
+            <button @click="deleteComfirm" class="btn btn-primary m-2">
+              确认
+            </button>
             <button
               @click="showConfigDeleteDiglog = false"
               class="btn btn-info"
@@ -323,7 +325,7 @@ getConfigList();
         />
         <div class="modal-action">
           <form method="dialog">
-            <button @click="editConfigComfirm" class="btn btn-primary">
+            <button @click="editConfigComfirm" class="btn btn-primary m-2">
               确认
             </button>
             <button
@@ -340,6 +342,7 @@ getConfigList();
       <div class="flex justify-between">
         <div class="flex">
           <input
+            @keypress.enter.prevent="getConfigList"
             v-model="keyword"
             type="text"
             class="input input-bordered m-2"

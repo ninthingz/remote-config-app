@@ -1,0 +1,50 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "web dev",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "dev"
+            ],
+            "problemMatcher": [],
+            "hide": true
+        },
+        {
+            "label": "tauri dev",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "tauri",
+                "dev"
+            ],
+            "options": {
+                "env": {
+                    "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS": "--remote-debugging-port=12345",
+                }
+            },
+            "problemMatcher": [],
+            "hide": true
+        },
+        {
+            "label": "run dev",
+            "dependsOn": [
+                "web dev",
+                "tauri dev"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "run build",
+            "type": "shell",
+            "command": "pnpm",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
