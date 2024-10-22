@@ -10,6 +10,7 @@ import {
 } from "../api/config";
 import ConfigHistoryView from "../components/ConfigHistoryView.vue";
 import moment from "moment";
+import lodash from "lodash";
 
 const toastStore = useToastStore();
 
@@ -75,7 +76,7 @@ const createConfigClick = () => {
 
 const editConfigClick = (config: Config) => {
   dialogType.value = "modify";
-  selectedConfig.value = config;
+  selectedConfig.value = lodash.cloneDeep(config);
   multiSelected.value = false;
   showConfigEditDialog.value = true;
 };
@@ -91,7 +92,7 @@ const batchEdit = () => {
 };
 
 const deleteConfigClick = (config: Config) => {
-  selectedConfig.value = config;
+  selectedConfig.value = lodash.cloneDeep(config);
 
   const lastGetTime = moment(selectedConfig.value.last_get_time * 1000);
   const newTime = moment();
@@ -191,7 +192,7 @@ const changeSelectedConfig = (event: Event) => {
     const selected = target.checked;
     if (selected) {
       selectConfigMap.value.set(id, config);
-      selectedConfig.value = config;
+      selectedConfig.value = lodash.cloneDeep(config);
     } else {
       selectConfigMap.value.delete(id);
     }
@@ -207,7 +208,7 @@ const selectAllChange = (event: Event) => {
     });
 
     if (configList.value.length > 0) {
-      selectedConfig.value = configList.value[0];
+      selectedConfig.value = lodash.cloneDeep(configList.value[0]);
     }
   } else {
     selectConfigMap.value.clear();

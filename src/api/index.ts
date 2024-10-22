@@ -6,7 +6,7 @@ let toastStore: any = null;
 const instance = axios.create({
   baseURL:
     import.meta.env.MODE === "development"
-      ? "http://127.0.0.1:18680"
+      ? "http://192.168.8.8:18680"
       : "http://192.168.8.8:18680",
   timeout: 5000,
 });
