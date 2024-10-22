@@ -374,7 +374,7 @@ getConfigList();
               </label>
             </th>
             <th>键</th>
-            <th>值</th>
+            <th class=" max-w-96">值</th>
             <th>上一次调用时间</th>
             <th>备注</th>
             <th>状态</th>
@@ -396,7 +396,7 @@ getConfigList();
               </label>
             </td>
             <td>{{ config.name }}</td>
-            <td>{{ config.value }}</td>
+            <td class=" max-w-96 break-words">{{ config.value }}</td>
             <td>{{ formatTime(config.last_get_time) }}</td>
             <td>{{ config.message }}</td>
             <td>
