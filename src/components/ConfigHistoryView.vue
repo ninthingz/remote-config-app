@@ -75,15 +75,39 @@ getConfigHistoryList();
           :key="configHistory.id"
           class="hover"
         >
-          <td>{{ configHistory.old_value }}</td>
-          <td>{{ configHistory.new_value }}</td>
-          <td>{{ configHistory.message }}</td>
           <td>
-            <div v-if="configHistory.enable" class="badge badge-accent">启用</div>
+            <div class="max-w-96 break-words">
+              {{ configHistory.old_value }}
+            </div>
+          </td>
+          <td>
+            <div class="max-w-96 break-words">
+              {{ configHistory.new_value }}
+            </div>
+          </td>
+          <td>
+            <div class="min-w-32 max-w-96 break-words">
+              {{ configHistory.message }}
+            </div>
+          </td>
+          <td>
+            <div v-if="configHistory.enable" class="badge badge-accent">
+              启用
+            </div>
             <div v-else class="badge badge-neutral">禁用</div>
           </td>
-          <td>{{ moment(configHistory.create_time * 1000).format("YYYY-MM-DD HH:mm:ss") }}</td>
-          <td>{{ configHistory.nickname }}</td>
+          <td>
+            <div class="w-36">
+              {{
+                moment(configHistory.create_time * 1000).format(
+                  "YYYY-MM-DD HH:mm:ss",
+                )
+              }}
+            </div>
+          </td>
+          <td>
+            <div class="w-16">{{ configHistory.nickname }}</div>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -374,7 +374,7 @@ getConfigList();
               </label>
             </th>
             <th>键</th>
-            <th class=" max-w-96">值</th>
+            <th>值</th>
             <th>上一次调用时间</th>
             <th>备注</th>
             <th>状态</th>
@@ -395,10 +395,20 @@ getConfigList();
                 />
               </label>
             </td>
-            <td>{{ config.name }}</td>
-            <td class=" max-w-96 break-words">{{ config.value }}</td>
-            <td>{{ formatTime(config.last_get_time) }}</td>
-            <td>{{ config.message }}</td>
+            <td>
+              <div class="max-w-96 break-words">{{ config.name }}</div>
+            </td>
+            <td>
+              <div class="max-w-96 break-words">{{ config.value }}</div>
+            </td>
+            <td>
+              <div class="w-36">{{ formatTime(config.last_get_time) }}</div>
+            </td>
+            <td>
+              <div class="min-w-32 max-w-96 break-words">
+                {{ config.message }}
+              </div>
+            </td>
             <td>
               <div v-if="config.enable" class="badge badge-accent w-12">
                 启用
@@ -406,24 +416,26 @@ getConfigList();
               <div v-else class="badge badge-neutral w-12">禁用</div>
             </td>
             <td>
-              <button
-                @click="editConfigClick(config)"
-                class="btn btn-primary btn-sm"
-              >
-                编辑
-              </button>
-              <button
-                @click="configHistoryClick(config)"
-                class="btn btn-secondary btn-sm m-2"
-              >
-                历史
-              </button>
-              <button
-                @click="deleteConfigClick(config)"
-                class="btn btn-error btn-sm"
-              >
-                删除
-              </button>
+              <div style="width: 210px">
+                <button
+                  @click="editConfigClick(config)"
+                  class="btn btn-primary btn-sm"
+                >
+                  编辑
+                </button>
+                <button
+                  @click="configHistoryClick(config)"
+                  class="btn btn-secondary btn-sm m-2"
+                >
+                  历史
+                </button>
+                <button
+                  @click="deleteConfigClick(config)"
+                  class="btn btn-error btn-sm"
+                >
+                  删除
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
