@@ -22,6 +22,10 @@ const configCount = ref(0);
 
 const keyword = ref("");
 
+const orderBy: Ref<"id" | "name" | "last_get_time" | "enable"> = ref("id");
+
+const sortType = ref(0);
+
 const selectConfigMap = ref(new Map<number, Config>());
 
 const selectedConfig: Ref<Config> = ref({
@@ -33,6 +37,7 @@ const selectedConfig: Ref<Config> = ref({
   enable: false,
   last_get_time: 0,
 });
+
 const selectedConfigByHistory: Ref<Config | undefined> = ref();
 
 const showConfigEditDialog = ref(false);
@@ -48,6 +53,8 @@ const getConfigList = async () => {
     keyword.value,
     configPageSize.value,
     configPageIndex.value,
+    orderBy.value,
+    sortType.value
   );
   if (res.data.code === 200) {
     configList.value = res.data.data!.list;
@@ -229,6 +236,53 @@ const nextConfigPage = () => {
   getConfigList();
 };
 
+const renderOrderChar = (order: "id" | "name" | "last_get_time" | "enable") => {
+  if (order === orderBy.value) {
+    if (sortType.value === 0) {
+      return "▼";
+    } else {
+      return "▲";
+    }
+  }
+  return "";
+};
+
+const orderByName = () => {
+  if (orderBy.value === "name") {
+    sortType.value = sortType.value === 0 ? 1 : 0;
+  } else {
+    orderBy.value = "name";
+    sortType.value = 0;
+  }
+  getConfigList();
+};
+
+const orderByLastGetTime = () => {
+  if (orderBy.value === "last_get_time") {
+    sortType.value = sortType.value === 0 ? 1 : 0;
+  } else {
+    orderBy.value = "last_get_time";
+    sortType.value = 0;
+  }
+  getConfigList();
+};
+
+const orderByEnable = () => {
+  if (orderBy.value === "enable") {
+    sortType.value = sortType.value === 0 ? 1 : 0;
+  } else {
+    orderBy.value = "enable";
+    sortType.value = 0;
+  }
+  getConfigList();
+}
+
+const clearSort = () => {
+  orderBy.value = "id";
+  sortType.value = 0;
+  getConfigList();
+};
+
 getConfigList();
 </script>
 
@@ -354,6 +408,7 @@ getConfigList();
           </button>
         </div>
         <div>
+          <button @click="clearSort" class="btn btn-info">清除排序</button>
           <button @click="batchEdit" class="btn btn-info m-2">批量修改</button>
           <button @click="createConfigClick" class="btn btn-primary">
             新增
@@ -373,11 +428,11 @@ getConfigList();
                 />
               </label>
             </th>
-            <th>键</th>
+            <th @click="orderByName"><button>键{{ renderOrderChar("name") }}</button></th>
             <th>值</th>
-            <th>上一次调用时间</th>
+            <th @click="orderByLastGetTime"><button>上一次调用时间{{ renderOrderChar("last_get_time") }}</button></th>
             <th>备注</th>
-            <th>状态</th>
+            <th @click="orderByEnable"><button>状态{{ renderOrderChar("enable") }}</button></th>
             <th>操作</th>
           </tr>
         </thead>

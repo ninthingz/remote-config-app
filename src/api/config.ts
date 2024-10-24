@@ -40,9 +40,11 @@ export const listConfig = (
   keyword: string,
   pageSize: number,
   pageIndex: number,
+  orderBy: string,
+  sortType: number
 ) => {
   return instance.get<CommonResponse<Page<Config>>>("/api/v1/config", {
-    params: { keyword, pageSize, pageIndex },
+    params: { keyword, pageSize, pageIndex, orderBy, sortType },
   });
 };
 
