@@ -101,14 +101,6 @@ const batchEdit = () => {
 const deleteConfigClick = (config: Config) => {
   selectedConfig.value = lodash.cloneDeep(config);
 
-  const lastGetTime = moment(selectedConfig.value.last_get_time * 1000);
-  const newTime = moment();
-
-  if (newTime.diff(lastGetTime, "days") < 7) {
-    toastStore.showToast("删除失败，最近一次调用时间小于7天", "info");
-    return;
-  }
-
   showConfigDeleteDiglog.value = true;
 };
 
@@ -183,7 +175,7 @@ const editConfigComfirm = async () => {
 const deleteComfirm = async () => {
   if (selectedConfig.value) {
     const res = await deleteConfig(selectedConfig.value.name);
-    if (res.data.data?.code === 200) {
+    if (res.data.code === 200) {
       showConfigDeleteDiglog.value = false;
       toastStore.showToast("删除成功", "success");
       getConfigList();
